@@ -5,9 +5,8 @@ import QuestItem from "./QuestItem";
 import styles from "./quest.module.css";
 
 function DailyQuest(props) {
-  const quests = props.quests;
-  console.log("DailyQuest props: ", quests);
-  console.log(quests.length);
+  const quests = props.user.userQuests;
+  const userData = props.user.userData[0];
 
   const [showTemplate, setShowTemplate] = useState(false);
   const [templates, setTemplates] = useState([]);
@@ -18,6 +17,7 @@ function DailyQuest(props) {
     try {
       const res = await axios.get(`http://localhost:8000/get_templates`);
       setTemplates(res.data);
+      console.log(res.data);
     } catch (err) {
       console.error("Failed to fetch templates: ", err);
     } finally {
@@ -30,6 +30,26 @@ function DailyQuest(props) {
       fetchTemplate();
     }
     setShowTemplate((prev) => !prev);
+  };
+
+  const addQuest = async (questInfo) => {
+    const param = questInfo[0];
+    const questId = questInfo[1];
+    try {
+      const userQuestData = {
+        user_id: userData.id,
+        template_id: questId,
+        active: true,
+        parameter: param,
+      };
+      const res = await axios.post(
+        "http://localhost:8000/addUserQuest",
+        userQuestData
+      );
+      console.log(res.data);
+    } catch (err) {
+      console.error("There was an error posting user quests: ", err);
+    }
   };
 
   return (
@@ -60,9 +80,11 @@ function DailyQuest(props) {
             templates.map((template) => (
               <QuestItem
                 key={template.id}
+                id={template.id}
                 name={template.quest_name}
                 desc={template.description}
                 param={template.parameter_schema}
+                addActiveQuest={addQuest}
               />
             ))
           )}

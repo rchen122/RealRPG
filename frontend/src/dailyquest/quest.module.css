@@ -27,6 +27,9 @@
   flex: 0 1 45%;
   border-radius: 10px;
   padding: 10px;
+  display: grid;
+  grid-template-rows: auto auto auto;
+  row-gap: 1rem;
 }
 
 .questitem h1 {

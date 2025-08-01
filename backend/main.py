@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 from dotenv import load_dotenv
+from pydantic import BaseModel
 import os
 
 app = FastAPI()
@@ -68,3 +69,15 @@ def get_templates():
         result = session.execute(template_stmt)
         data = [dict(row._mapping) for row in result]
         return data
+    
+
+class UserQuest(BaseModel):
+    user_id: int
+    template_id: int
+    active: bool
+    parameter: str
+
+@app.post("/addUserQuest")
+def add_user(userInfo: UserQuest):
+    print(userInfo)
+    return {"message": "reached", "data": userInfo}
