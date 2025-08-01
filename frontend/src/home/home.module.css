@@ -1,0 +1,22 @@
+.container {
+    display: flex;
+    padding: 100px 300px 40px;
+    gap: 40px;
+    /* border: 1px solid var(--border); */
+    background-color: var(--bg-main)
+}
+
+.mainBody {
+    flex: 5;
+    color: white;
+    /* border: dashed; */
+    /* border-color: pink; */
+
+}
+
+.sidebar {
+    flex: 2;
+    color: white;
+    /* border: dashed; */
+    /* border-color: pink; */
+}
