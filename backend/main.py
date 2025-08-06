@@ -4,6 +4,7 @@ from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 from dotenv import load_dotenv
 from pydantic import BaseModel
+import json
 import os
 
 app = FastAPI()
@@ -50,8 +51,7 @@ def get_userdata(userId: int = Query(...)):
         for row in joined_result:
             user_quests.append({
                 "id": row.uq_id,
-                "progress": row.progress,
-                "parameters": row.parameters,
+                "parameters": row.parameter,
                 "template": {
                     "id": row.qt_id,
                     "quest_name": row.quest_name,
@@ -59,14 +59,22 @@ def get_userdata(userId: int = Query(...)):
                     "parameter_schema": row.parameter_schema
                 }
             })
-
+    print("data fetched")
     return {"userData": user_data, "userQuests": user_quests}
 
 @app.get("/get_templates")
-def get_templates():
+def get_templates(userId: int = Query(...)):
     with SessionLocal() as session:
-        template_stmt = text("SELECT * FROM quest_template")
-        result = session.execute(template_stmt)
+        template_stmt = text("""
+            SELECT qt.*
+                FROM quest_template qt
+                LEFT JOIN user_quest uq 
+                ON uq.template_id = qt.id 
+                AND uq.user_id = :userId 
+                AND uq.active = true
+            WHERE uq.id IS NULL;
+        """)
+        result = session.execute(template_stmt, {"userId": userId})
         data = [dict(row._mapping) for row in result]
         return data
     
@@ -75,9 +83,14 @@ class UserQuest(BaseModel):
     user_id: int
     template_id: int
     active: bool
-    parameter: str
+    parameter: dict
 
 @app.post("/addUserQuest")
 def add_user(userInfo: UserQuest):
-    print(userInfo)
-    return {"message": "reached", "data": userInfo}
+    with SessionLocal() as session:
+        print(userInfo)
+        userQuest_stmt = text("INSERT INTO user_quest (user_id, template_id, active, parameter) VALUES (:user_id, :template_id, :active, :parameter)")
+        result = session.execute(userQuest_stmt, {"user_id": userInfo.user_id, "template_id": userInfo.template_id, 
+                                                  "active": userInfo.active, "parameter": json.dumps(userInfo.parameter)})
+        session.commit()
+    return {"message": "reached", "data": result.fetchall()}

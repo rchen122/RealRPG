@@ -8,14 +8,13 @@ function QuestItem(props) {
     setInputText(value);
   }
 
-  function addQuest(event) {
-    props.addActiveQuest([inputText, props.id]);
-    event.preventDefault();
-  }
-
   const name = props.param.Name;
   const unit = props.param.Unit;
-  console.log(typeof name, name);
+
+  function addQuest(event) {
+    props.addActiveQuest([inputText, props.id, unit]);
+    event.preventDefault();
+  }
 
   return (
     <div className={styles.questitem}>

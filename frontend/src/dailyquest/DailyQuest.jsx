@@ -7,6 +7,7 @@ import styles from "./quest.module.css";
 function DailyQuest(props) {
   const quests = props.user.userQuests;
   const userData = props.user.userData[0];
+  const userId = userData.id;
 
   const [showTemplate, setShowTemplate] = useState(false);
   const [templates, setTemplates] = useState([]);
@@ -15,7 +16,9 @@ function DailyQuest(props) {
   const fetchTemplate = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(`http://localhost:8000/get_templates`);
+      const res = await axios.get(
+        `http://localhost:8000/get_templates?userId=${userId}`
+      );
       setTemplates(res.data);
       console.log(res.data);
     } catch (err) {
@@ -35,12 +38,13 @@ function DailyQuest(props) {
   const addQuest = async (questInfo) => {
     const param = questInfo[0];
     const questId = questInfo[1];
+    const unit = questInfo[2];
     try {
       const userQuestData = {
         user_id: userData.id,
         template_id: questId,
         active: true,
-        parameter: param,
+        parameter: { [unit]: param },
       };
       const res = await axios.post(
         "http://localhost:8000/addUserQuest",
@@ -68,6 +72,7 @@ function DailyQuest(props) {
           );
         })
       )}
+
       <button className={styles.loadButton} onClick={handleClick}>
         {showTemplate ? "Return" : "Edit Quests"}
       </button>
