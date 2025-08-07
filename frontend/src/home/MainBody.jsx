@@ -1,18 +1,17 @@
+import { useUser } from "../UserContext";
 import DailyQuest from "../dailyquest/DailyQuest";
 import styles from "./home.module.css";
 
 function MainBody(props) {
-  const user = props.user;
-  console.log("MainBody props: ", user);
-  if (!user) {
+  const { userData } = useUser();
+
+  if (!userData) {
     return <div className={styles.mainBody}>Loading data, please wait...</div>;
   }
 
-  const userQuests = user.userQuests;
   return (
     <div className={styles.mainBody}>
-      <DailyQuest user={user} />
-      <p>There should be a big ish overview of daily activities</p>
+      <DailyQuest />
       <p>Then underneath that, there should be a row for recent modules</p>
     </div>
   );

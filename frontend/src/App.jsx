@@ -1,32 +1,16 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import { UserProvider, useUser } from "./UserContext";
+import StartupLogic from "./StartupLogic";
 import Navbar from "./navbar/Navbar";
 import Home from "./home/Home";
 
 function App() {
-  const userId = 1; // Test
-
-  const [user, setUser] = useState(null);
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const res = await axios.get(
-          `http://localhost:8000/userdata?userId=${userId}`
-        );
-        setUser(res.data);
-      } catch (err) {
-        console.error("Failed to fetch:", err);
-      }
-    };
-
-    fetchUserData();
-  }, []);
-
   return (
-    <div>
+    <UserProvider>
+      <StartupLogic />;
       <Navbar />
-      <Home user={user} />
-    </div>
+      <Home />
+    </UserProvider>
   );
 }
 
