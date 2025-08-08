@@ -87,10 +87,11 @@ class UserQuest(BaseModel):
 
 @app.post("/addUserQuest")
 def add_user(userInfo: UserQuest):
+    print(userInfo)
+
     with SessionLocal() as session:
-        print(userInfo)
         userQuest_stmt = text("INSERT INTO user_quest (user_id, template_id, active, parameter) VALUES (:user_id, :template_id, :active, :parameter)")
         result = session.execute(userQuest_stmt, {"user_id": userInfo.user_id, "template_id": userInfo.template_id, 
                                                   "active": userInfo.active, "parameter": json.dumps(userInfo.parameter)})
         session.commit()
-    return {"message": "reached", "data": result.fetchall()}
+    return {"message": "reached", "data": ""}

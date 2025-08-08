@@ -1,5 +1,7 @@
 import { useState } from "react";
 import styles from "./quest.module.css";
+import { useUser } from "../UserContext";
+import axios from "axios";
 
 function QuestItem(props) {
   const [inputText, setInputText] = useState("");
@@ -7,14 +9,33 @@ function QuestItem(props) {
     const value = event.target.value;
     setInputText(value);
   }
-
+  const { userData } = useUser();
   const name = props.param.Name;
   const unit = props.param.Unit;
 
-  function addQuest(event) {
-    props.addActiveQuest([inputText, props.id, unit]);
+  const addQuest = async (event) => {
     event.preventDefault();
-  }
+
+    const param = inputText;
+    const questId = props.id;
+
+    try {
+      const userQuestData = {
+        user_id: userData.id,
+        template_id: questId,
+        active: true,
+        parameter: { [unit]: param },
+      };
+      const res = await axios.post(
+        "http://localhost:8000/addUserQuest",
+        userQuestData
+      );
+      // console.log(userQuestData);
+      // console.log(res.data);
+    } catch (err) {
+      console.error("There was an error posting user quests: ", err);
+    }
+  };
 
   return (
     <div className={styles.questitem}>

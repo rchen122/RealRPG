@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Press+Start+2P&display=swap");
+
 :root {
   --bg-main: #0e0f1a;
   --bg-section: #1a1c2b;
@@ -5,7 +7,13 @@
   --text-primary: #f0f0f5;
   --accent-soft: #60a5fa;
   --accent-bold: #00e0ff;
+  --font-game: "Press Start 2P", cursive;
+  --font-body: "Lato", sans-serif;
   background-color: var(--bg-main);
+}
+
+body {
+  font-family: var(--font-body);
 }
 
 /* :root {

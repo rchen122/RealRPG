@@ -14,7 +14,7 @@ function StartupLogic() {
         const templates = await axios.get(
           `http://localhost:8000/get_templates?userId=1`
         );
-        setUserData(res.data.userData);
+        setUserData(res.data.userData[0]);
         setActiveQuests(res.data.userQuests);
         setAvailableQuests(templates.data);
       } catch (err) {
@@ -24,6 +24,8 @@ function StartupLogic() {
 
     fetchUserData();
   }, []);
+  const { userData } = useUser();
+  console.log(userData);
   return null;
 }
 

@@ -1,15 +1,21 @@
 .navbar {
-    position: fixed;
-    display:flex;
-    width:90%;
-    height: 60px;
-    padding: 8px 100px;
-    margin: -16px -16px;
-    gap: 16px;
-    background-color: var(--bg-main);
-    justify-content: flex-start;
-    border: 1px solid var(--border);
-    color: white;
+  position: fixed;
+  display: flex;
+  width: 90%;
+  height: 60px;
+  padding: 0px 100px;
+  margin: -28px -16px;
+  gap: 16px;
+  background-color: var(--bg-main);
+  justify-content: flex-start;
+  border-bottom: 4px solid var(--border);
+  color: white;
+}
+
+header {
+  font-family: var(--font-game);
+  font-size: 14px;
+  padding: 2px 20px;
 }
 
 .navButton {
@@ -18,15 +24,16 @@
   border: none;
   padding: 10px 20px;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 18px;
   height: 80%;
   align-self: center;
 }
 
 .navButton:hover {
-    text-decoration: underline;
+  text-decoration: underline;
+  background-color: var(--bg-section);
 }
 
 .rightAligned {
-    margin-left: auto;
+  margin-left: auto;
 }

@@ -14,42 +14,21 @@ function DailyQuest(props) {
     setShowTemplate((prev) => !prev);
   };
 
-  const addQuest = async (questInfo) => {
-    const param = questInfo[0];
-    const questId = questInfo[1];
-    const unit = questInfo[2];
-    try {
-      const userQuestData = {
-        user_id: userData.id,
-        template_id: questId,
-        active: true,
-        parameter: { [unit]: param },
-      };
-      const res = await axios.post(
-        "http://localhost:8000/addUserQuest",
-        userQuestData
-      );
-      console.log(res.data);
-    } catch (err) {
-      console.error("There was an error posting user quests: ", err);
-    }
-  };
-
   return (
     <div className={styles.questWindow}>
       {activeQuests.length === 0 ? (
         <div>No Active Quests</div>
       ) : (
-        activeQuests.map((questUnit) => {
-          return (
+        <div className={styles.loadQuests}>
+          {activeQuests.map((questUnit) => (
             <ActiveQuestItem
               key={questUnit.id}
               id={questUnit.id}
               param={questUnit.parameters}
               template={questUnit.template}
             />
-          );
-        })
+          ))}
+        </div>
       )}
 
       <button className={styles.loadButton} onClick={handleClick}>
@@ -65,7 +44,6 @@ function DailyQuest(props) {
               name={template.quest_name}
               desc={template.description}
               param={template.parameter_schema}
-              addActiveQuest={addQuest}
             />
           ))}
         </div>

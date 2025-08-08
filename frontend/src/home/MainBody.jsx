@@ -12,7 +12,7 @@ function MainBody(props) {
   return (
     <div className={styles.mainBody}>
       <DailyQuest />
-      <p>Then underneath that, there should be a row for recent modules</p>
+      <p>Future module functionality in progress...</p>
     </div>
   );
 }
