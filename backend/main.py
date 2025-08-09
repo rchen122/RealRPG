@@ -24,6 +24,10 @@ DATABASE_URL = os.getenv("DB_URL")
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(bind=engine)
 
+@app.on_event("startup")
+def update_user_quest_logs():
+    pass
+
 @app.get("/userdata")
 def get_userdata(userId: int = Query(...)):
     with SessionLocal() as session:

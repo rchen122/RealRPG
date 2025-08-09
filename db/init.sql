@@ -1,8 +1,8 @@
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
-    email VARCHAR(100) NOT NULL,
-    username VARCHAR(100) NOT NULL,
-    hashed_password VARCHAR(100) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    username VARCHAR(100) NOT NULL UNIQUE,
+    hashed_password VARCHAR(255) NOT NULL,
 
     full_name VARCHAR(100) NOT NULL,
     created_at TIMESTAMP DEFAULT now(),
@@ -11,27 +11,30 @@ CREATE TABLE users (
 
 CREATE TABLE quest_template (
     id SERIAL PRIMARY KEY,
-    quest_name VARCHAR(50),
-    description TEXT,
-    parameter_schema JSONB
+    quest_name VARCHAR(50) NOT NULL,
+    description TEXT NOT NULL,
+    parameter_schema JSONB NOT NULL
 ); -- QUEST TEMPLATES WITH SPECIFIC QUEST INFORMATION
 
 CREATE TABLE user_quest (
     id SERIAL PRIMARY KEY,
-    user_id INT REFERENCES users(id),
-    template_id INT REFERENCES quest_template(id),
+    user_id INT REFERENCES users(id) ON DELETE CASCADE,
+    template_id INT REFERENCES quest_template(id) ON DELETE CASCADE,
     active BOOLEAN NOT NULL,
-    parameter JSONB
+    parameters JSONB NOT NULL
 ); -- QUESTS LINKED TO EACH USER
 
 CREATE TABLE user_quest_log (
     id SERIAL PRIMARY KEY,
-    user_id INT REFERENCES users(id),
-    template_id INT REFERENCES quest_template(id),
-    date TIMESTAMP NOT NULL,
-    completed BOOLEAN NOT NULL,
-    progress_data JSONB
+    user_id INT REFERENCES users(id) ON DELETE CASCADE,
+    template_id INT REFERENCES quest_template(id) ON DELETE CASCADE,
+    quest_date DATE DEFAULT now(),
+    completed BOOLEAN DEFAULT FALSE,
+    progress_data JSONB,
+    CONSTRAINT uq_unique_log_per_day UNIQUE (user_id, template_id, quest_date)
 ); -- LOGS DAILY QUESTS FOR HISTORY
+
+
 
 INSERT INTO users (email, username, hashed_password, full_name)
 VALUES ('raymondchen1221@gmail.com', 'rchen122', 'password1234', 'Raymond Chen');
@@ -50,10 +53,7 @@ VALUES
  'This quest encourages daily journaling to promote reflection and mindfulness.', 
  '{"Name": "Number", "Unit": "words", "Datatype": "int"}'::jsonb),
 
--- 3. Pomodoro Focus Sessions
--- ('Pomodoro Focus Sessions', 
---  'Complete a number of Pomodoro-style focused work sessions to increase productivity.', 
---  '{"session_length": 25, "target_sessions": 4}'::jsonb),
+
 
 -- 4. Hydration
 ('Hydration', 
