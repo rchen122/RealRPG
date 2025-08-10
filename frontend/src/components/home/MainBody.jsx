@@ -1,8 +1,8 @@
-import { useUser } from "../UserContext";
-import DailyQuest from "../dailyquest/DailyQuest";
+import { useUser } from "../../UserContext";
+import ActiveQuests from "../dailyquest/ActiveQuests";
 import styles from "./home.module.css";
 
-function MainBody(props) {
+function MainBody() {
   const { userData } = useUser();
 
   if (!userData) {
@@ -11,7 +11,7 @@ function MainBody(props) {
 
   return (
     <div className={styles.mainBody}>
-      <DailyQuest />
+      <ActiveQuests />
       <p>Future module functionality in progress...</p>
     </div>
   );

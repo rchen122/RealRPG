@@ -1,11 +1,10 @@
 import { useState } from "react";
-import axios from "axios";
 import { useUser } from "../UserContext";
-import ActiveQuestItem from "./ActiveQuestItem";
-import QuestItem from "./QuestItem";
-import styles from "./quest.module.css";
+import ActiveQuests from "../components/dailyquest/ActiveQuests";
+import QuestItem from "../components/dailyquest/QuestItem";
+import styles from "../components/dailyquest/quest.module.css";
 
-function DailyQuest(props) {
+function QuestPage() {
   const { userData, availableQuests, activeQuests } = useUser();
 
   const [showTemplate, setShowTemplate] = useState(false);
@@ -16,20 +15,7 @@ function DailyQuest(props) {
 
   return (
     <div className={styles.questWindow}>
-      {activeQuests.length === 0 ? (
-        <div>No Active Quests</div>
-      ) : (
-        <div className={styles.loadQuests}>
-          {activeQuests.map((questUnit) => (
-            <ActiveQuestItem
-              key={questUnit.id}
-              id={questUnit.id}
-              param={questUnit.parameters}
-              template={questUnit.template}
-            />
-          ))}
-        </div>
-      )}
+      <ActiveQuests />
 
       <button className={styles.loadButton} onClick={handleClick}>
         {showTemplate ? "Return" : "Edit Quests"}
@@ -52,4 +38,4 @@ function DailyQuest(props) {
   );
 }
 
-export default DailyQuest;
+export default QuestPage;

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useUser } from "../UserContext";
+import { useUser } from "../../UserContext";
 import MainBody from "./MainBody";
 import Sidebar from "./Sidebar";
 import styles from "./home.module.css";

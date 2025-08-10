@@ -1,0 +1,15 @@
+.container {
+  display: flex;
+  gap: 40px;
+  background-color: var(--bg-main);
+}
+
+.mainBody {
+  flex: 5;
+  color: white;
+}
+
+.sidebar {
+  flex: 2;
+  color: white;
+}

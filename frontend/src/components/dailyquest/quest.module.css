@@ -1,0 +1,67 @@
+.loadQuests {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: left;
+}
+
+.loadButton {
+  margin: 10px;
+}
+
+.questWindow {
+  background-color: lightblue;
+
+  color: black;
+  min-height: 200px;
+  height: auto;
+  border-radius: 20px;
+  gap: 20px;
+  padding: 20px;
+}
+
+.questitem {
+  border: 1px solid white;
+  flex: 0 1 40%;
+  border-radius: 10px;
+  padding: 14px;
+  display: grid;
+  grid-template-rows: auto auto auto;
+  row-gap: 1rem;
+}
+
+.questitem h1 {
+  font-size: 16px;
+}
+
+.container {
+  position: relative;
+  width: 150px;
+  height: 24px;
+  border: 2px solid #333;
+  background-color: #555555;
+  border-radius: 4px;
+  user-select: none;
+  font-family: var(--font-main);
+  overflow: hidden;
+}
+
+.fill {
+  height: 100%;
+  background-color: #4caf50;
+  transition: width 0.3s ease;
+  image-rendering: pixelated;
+}
+
+.text {
+  position: absolute;
+  width: 100%;
+  text-align: center;
+  top: 0;
+  line-height: 24px;
+  font-weight: bold;
+  color: white;
+  pointer-events: none;
+  user-select: none;
+  font-family: var(--font-main);
+}

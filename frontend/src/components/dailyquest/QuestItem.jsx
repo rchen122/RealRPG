@@ -1,6 +1,6 @@
 import { useState } from "react";
 import styles from "./quest.module.css";
-import { useUser } from "../UserContext";
+import { useUser } from "../../UserContext";
 import axios from "axios";
 
 function QuestItem(props) {
