@@ -30,20 +30,30 @@
   row-gap: 1rem;
 }
 
-.questitem h1 {
+.activeQuestItem {
+  border: 1px solid white;
+  flex: 0 1 40%;
+  border-radius: 10px;
+  padding: 20px;
+  display: grid;
+  grid-template-rows: auto auto;
+  row-gap: 10px;
+  text-align: left;
+}
+
+.activeQuestItem h1 {
   font-size: 16px;
 }
 
-.container {
+.barContainer {
   position: relative;
-  width: 150px;
+  width: 100%;
   height: 24px;
   border: 2px solid #333;
   background-color: #555555;
   border-radius: 4px;
-  user-select: none;
   font-family: var(--font-main);
-  overflow: hidden;
+  justify-content: center;
 }
 
 .fill {
@@ -63,5 +73,28 @@
   color: white;
   pointer-events: none;
   user-select: none;
-  font-family: var(--font-main);
+  font-family: var(--font-body);
+}
+
+.clickableArea {
+  position: relative;
+  width: 100%;
+  height: 24px;
+  cursor: pointer;
+}
+
+.questForm {
+  display: flex;
+  width: 100%;
+  gap: 6px;
+  padding-top: 10px;
+}
+
+.questForm input {
+  flex: 7;
+  min-width: 0;
+}
+.questForm button {
+  flex: 3;
+  min-width: 0;
 }

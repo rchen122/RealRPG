@@ -1,35 +1,43 @@
 import ProgressBar from "./ProgressBar";
 import styles from "./quest.module.css";
-import { useState } from "react";
+import axios from "axios";
+import { useUser } from "../../UserContext";
 
 function ActiveQuestItem(props) {
   const questName = props.template.quest_name;
   const [[key, value]] = Object.entries(props.param);
-  const [inputText, updateText] = useState("");
 
-  function updateProgress(event) {}
+  const updateProgress = async (value) => {
+    const { userData } = useUser();
+    try {
+      queryData = {
+        user_id: userData.id,
+        template_id: props.template.id,
+        parameters: value,
+      };
+      const res = await axios.post(
+        "http://localhost:8000/updateDailyQuest",
+        queryData
+      );
+    } catch (err) {
+      console.error("There was an error updating a daily quest", err);
+    }
+  };
   const currProgress = 4;
-  // First Row: Title
-  // Second Row: Progress Bar
-  // Third Row: Update Entry
+
   return (
-    <div className={styles.questitem}>
-      <div className={styles.row1}>
+    <div className={styles.activeQuestItem}>
+      <div className={styles.firstRow}>
         <h1>{questName}</h1>
       </div>
-      <div className={styles.row2}>
-        <ProgressBar current={currProgress} max={value} units={key} />
+      <div>
+        <ProgressBar
+          current={currProgress}
+          max={value}
+          units={key}
+          updateProgress={updateProgress}
+        />
       </div>
-      {/* <div className={styles.row3}>
-        <form>
-          <input
-            onChange={updateText}
-            placeholder="Add entry"
-            value={inputText}
-          ></input>
-          <button onClick={updateProgress}>Submit</button>
-        </form>
-      </div> */}
     </div>
   );
 }

@@ -24,8 +24,8 @@ function StartupLogic() {
 
     fetchUserData();
   }, []);
-  const { userData } = useUser();
-  console.log(userData);
+  // const { userData } = useUser();
+  // console.log(userData);
   return null;
 }
 
