@@ -1,4 +1,4 @@
-import styles from "./quest.module.css";
+import styles from "./activeQuest.module.css";
 import { useState } from "react";
 
 function ProgressBar({ current, max, units, updateProgress }) {

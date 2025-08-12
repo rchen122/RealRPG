@@ -3,9 +3,14 @@ import axios from "axios";
 import { fetchUserData } from "../utils/Auth";
 import { useUser } from "../UserContext";
 import { useNavigate } from "react-router-dom";
+import styles from "./Login.module.css";
+
 function Login() {
   const [userInput, setUserInput] = useState("");
   const [pwInput, setPwInput] = useState("");
+  const [error, setError] = useState("");
+  const [hasError, setHasError] = useState(false);
+
   const { setUserData, setAvailableQuests, setActiveQuests } = useUser();
   const navigate = useNavigate();
 
@@ -41,8 +46,8 @@ function Login() {
       navigate("/");
     } catch (err) {
       if (err.response) {
-        console.error("Error Status: ", err.response.status);
-        console.error("Error Data: ", err.response.data);
+        setHasError(true);
+        setError(err.response.data.detail);
       }
     }
   };
@@ -62,29 +67,38 @@ function Login() {
       //Then I need to fetch User Id
     } catch (err) {
       if (err.response) {
-        console.error("Error Status: ", err.response.status);
-        console.error("Error Data: ", err.response.data);
+        setHasError(true);
+        setError(err.response.data.detail);
       }
     }
   };
 
   return (
-    <div>
-      <form>
-        <input
-          name="Username"
-          placeholder="Username"
-          value={userInput}
-          onChange={updateInput}
-        />
-        <input
-          name="Password"
-          placeholder="Password"
-          value={pwInput}
-          onChange={updatePw}
-        />
-        <button onClick={handleLogIn}>Log In</button>
-        <button onClick={handleSignUp}>Sign Up</button>
+    <div className={styles.container}>
+      <form className={styles.LogIn}>
+        <h1>Log in or Sign up</h1>
+
+        <div className={styles.username}>
+          <input
+            name="Username"
+            placeholder="Username"
+            value={userInput}
+            onChange={updateInput}
+          />
+        </div>
+        <div className={styles.password}>
+          <input
+            name="Password"
+            placeholder="Password"
+            value={pwInput}
+            onChange={updatePw}
+          />
+        </div>
+        {hasError && <div className={styles.errorMsg}>{error}</div>}
+        <div className={styles.formButtons}>
+          <button onClick={handleLogIn}>Log In</button>
+          <button onClick={handleSignUp}>Sign Up</button>
+        </div>
       </form>
     </div>
   );

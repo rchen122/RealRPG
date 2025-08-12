@@ -14,7 +14,7 @@ function QuestItem(props) {
   const unit = props.param.Unit;
 
   const addQuest = async (event) => {
-    event.preventDefault();
+    // event.preventDefault();
 
     const param = inputText;
     const questId = props.id;
@@ -30,8 +30,6 @@ function QuestItem(props) {
         "http://localhost:8000/addUserQuest",
         userQuestData
       );
-      // console.log(userQuestData);
-      // console.log(res.data);
     } catch (err) {
       console.error("There was an error posting user quests: ", err);
     }
@@ -43,11 +41,11 @@ function QuestItem(props) {
         <h1>{props.name}</h1>
         <span>{props.emoji}</span>
       </div>
-      <div className={styles.row2}>
+      <div className={styles.desc}>
         <p>{props.desc}</p>
       </div>
-      <div className={styles.row3}>
-        <form>
+      <div>
+        <form className={styles.formInputs}>
           <input
             name="input parameter"
             onChange={updateText}

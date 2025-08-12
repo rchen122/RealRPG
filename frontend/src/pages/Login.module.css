@@ -1,0 +1,38 @@
+.container {
+  text-align: center;
+}
+
+.LogIn {
+  background-color: lightblue;
+  display: grid;
+  grid-template-rows: auto auto auto;
+  row-gap: 16px;
+  width: 50%;
+  margin: 0 auto;
+  border-radius: 20px;
+  padding: 16px 0px 32px;
+  color: black;
+}
+
+.username {
+  display: flex;
+  justify-content: center;
+}
+.password {
+  display: flex;
+  justify-content: center;
+}
+.formButtons {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+}
+
+.LogIn input {
+  width: 50%;
+}
+
+.errorMsg {
+  color: red;
+  font-size: 16px;
+}

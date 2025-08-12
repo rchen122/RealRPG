@@ -1,20 +1,20 @@
 import ProgressBar from "./ProgressBar";
-import styles from "./quest.module.css";
+import styles from "./activeQuest.module.css";
 import axios from "axios";
 import { useUser } from "../../UserContext";
 
 function ActiveQuestItem(props) {
   const questUnit = props.unit;
   console.log(questUnit);
-  const questName = props.template.quest_name;
-  const [[key, value]] = Object.entries(props.param);
+  const questName = questUnit.template.quest_name;
+  const [[key, value]] = Object.entries(questUnit.parameters);
 
   const updateProgress = async (value) => {
     const { userData } = useUser();
     try {
-      queryData = {
+      const queryData = {
         user_id: userData.id,
-        template_id: props.template.id,
+        template_id: questUnit.template.id,
         parameters: value,
       };
       const res = await axios.post(

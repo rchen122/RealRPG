@@ -48,13 +48,11 @@ def login(response: Response, username: str, password: str):
         cred_result = session.execute(cred_stmt, {"username": username}).fetchone()
     if not cred_result:
         raise HTTPException(status_code=401, detail="No matching username, please create an account.")
-    # print(cred_result, len(cred_result))
+
     db_hashed_password = cred_result[2]
-    print(db_hashed_password)
     if isinstance(db_hashed_password, str):
         db_hashed_password = db_hashed_password.encode("utf-8")
     password_bytes = password.encode("utf-8")
-
 
     if bcrypt.checkpw(password_bytes, db_hashed_password):
         session_id = secrets.token_hex(16)
@@ -62,8 +60,7 @@ def login(response: Response, username: str, password: str):
         response.set_cookie(key="session_id", value=session_id, httponly=True, samesite="Lax", secure=False)
         return {"message": f"Logged in as {username}", "userId": cred_result[0]}
     else:
-        raise HTTPException(status_code=401, detail="Password does not match.")
-    return {}
+        raise HTTPException(status_code=401, detail="Password does not match")
 
 @app.get("/signup")
 def signup(response: Response, username: str, password: str):
@@ -73,7 +70,7 @@ def signup(response: Response, username: str, password: str):
         cred_stmt = text("SELECT username FROM users WHERE username= :username")
         existing_user = session.execute(cred_stmt, {"username": username}).fetchone()
         if existing_user is not None:
-            raise HTTPException(status_code=400, detail="Username already exists.")
+            raise HTTPException(status_code=400, detail="Username already exists, please log in.")
         # if not, hash the password and create user
         hashed_pw = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
         hashed_pw_str = hashed_pw.decode('utf-8')
@@ -113,7 +110,7 @@ def get_userdata(userId: int = Query(...)):
         for row in joined_result:
             user_quests.append({
                 "id": row.uq_id,
-                "parameters": json.loads(row.parameter) if row.parameter else {},
+                "parameters": row.parameter,
                 "template": {
                     "id": row.qt_id,
                     "quest_name": row.quest_name,
