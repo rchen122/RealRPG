@@ -8,6 +8,7 @@ import json
 import os
 import bcrypt
 import secrets
+import datetime
 
 app = FastAPI()
 load_dotenv()
@@ -28,6 +29,50 @@ print(sessions)
 DATABASE_URL = os.getenv("DB_URL")
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(bind=engine)
+
+@app.get("/checklogs")
+def check_logs(user_id: int):
+    with SessionLocal() as session:
+        active_quests = text("""
+            SELECT 
+                uq.id AS user_id,
+                uq.parameter,
+                qt.id AS template_id
+            FROM user_quest uq
+            JOIN quest_template qt ON uq.template_id = qt.id
+            WHERE uq.user_id = :userId AND uq.active = true;
+        """)
+        results = session.execute(active_quests, {"userId": user_id}).mappings().all()
+        if len(results) == 0:
+            return {"message": "No active Quests"}
+        print(results)
+        current_date = datetime.date.today()
+
+        for quest in results:
+            print(quest)
+            template_id = quest["template_id"]
+            unit = list(quest["parameter"].keys())[0]
+            sql = text("""
+                INSERT INTO user_quest_log (user_id, template_id, date, completed, progress_data)
+                SELECT :user_id, :template_id, :current_date, false, :progress_data
+                WHERE NOT EXISTS (
+                    SELECT 1 FROM user_quest_log
+                    WHERE user_id = :user_id
+                    AND template_id = :template_id
+                    AND date::date = :current_date
+                )
+            """)
+            progress_data_json = {unit: 0}
+            session.execute(sql, {
+                "user_id": user_id,
+                "template_id": template_id,
+                "current_date": current_date,
+                "progress_data": json.dumps(progress_data_json)
+            })
+        session.commit()
+    return {"message": "Finished log checks"}
+
+
 
 @app.get("/me")
 def get_me(request: Request):
@@ -88,7 +133,7 @@ def signup(response: Response, username: str, password: str):
 def get_userdata(userId: int = Query(...)):
     print("UserId", userId)
     with SessionLocal() as session:
-        user_stmt = text("SELECT * FROM users WHERE id = :userId")
+        user_stmt = text("SELECT id, email, username, full_name, streak FROM users WHERE id = :userId")
         user_result = session.execute(user_stmt, {"userId": userId})
         user_data = [dict(row._mapping) for row in user_result]
 
@@ -108,6 +153,20 @@ def get_userdata(userId: int = Query(...)):
         
         user_quests = []
         for row in joined_result:
+
+            progress_stmt = text("""
+                SELECT progress_data
+                FROM user_quest_log
+                WHERE user_id = :userId
+                  AND template_id = :template_id
+                  AND date::date = :today
+            """)
+            progress_result = session.execute(progress_stmt, {
+                "userId": userId,
+                "template_id": row.qt_id,
+                "today": datetime.date.today()
+            }).fetchone()
+            progress_data = progress_result.progress_data if progress_result else {}
             user_quests.append({
                 "id": row.uq_id,
                 "parameters": row.parameter,
@@ -116,9 +175,9 @@ def get_userdata(userId: int = Query(...)):
                     "quest_name": row.quest_name,
                     "description": row.description,
                     "parameter_schema": row.parameter_schema
-                }
+                },
+                "progress_data": progress_data
             })
-    print(user_quests)
     return {"userData": user_data, "userQuests": user_quests}
 
 @app.get("/get_templates")
@@ -143,14 +202,30 @@ class UserQuest(BaseModel):
     template_id: int
     active: bool
     parameter: dict
+    mode: str
 
-@app.post("/addUserQuest")
+@app.post("/updateUserQuest")
 def add_user(userInfo: UserQuest):
     print(userInfo)
 
     with SessionLocal() as session:
-        userQuest_stmt = text("INSERT INTO user_quest (user_id, template_id, active, parameter) VALUES (:user_id, :template_id, :active, :parameter)")
-        result = session.execute(userQuest_stmt, {"user_id": userInfo.user_id, "template_id": userInfo.template_id, 
-                                                  "active": userInfo.active, "parameter": json.dumps(userInfo.parameter)})
+        if userInfo.mode == "add":
+            userQuest_stmt = text("INSERT INTO user_quest (user_id, template_id, active, parameter) VALUES (:user_id, :template_id, :active, :parameter)")
+            result = session.execute(userQuest_stmt, {"user_id": userInfo.user_id, "template_id": userInfo.template_id, 
+                                                    "active": userInfo.active, "parameter": json.dumps(userInfo.parameter)})
+            session.commit()
+        elif userInfo.mode == "update":
+            sql = text("""
+                UPDATE user_quest_log
+                SET progress_data = :progress_data
+                WHERE user_id = :user_id
+                AND template_id = :template_id
+            """)
+
+            session.execute(sql, {
+                "progress_data": json.dumps(userInfo.parameter),
+                "user_id": userInfo.user_id,
+                "template_id": userInfo.template_id
+            })  
         session.commit()
     return {"message": "reached", "data": ""}

@@ -14,7 +14,7 @@ function QuestItem(props) {
   const unit = props.param.Unit;
 
   const addQuest = async (event) => {
-    // event.preventDefault();
+    event.preventDefault();
 
     const param = inputText;
     const questId = props.id;
@@ -25,9 +25,10 @@ function QuestItem(props) {
         template_id: questId,
         active: true,
         parameter: { [unit]: param },
+        mode: "add",
       };
       const res = await axios.post(
-        "http://localhost:8000/addUserQuest",
+        "http://localhost:8000/updateUserQuest",
         userQuestData
       );
     } catch (err) {
