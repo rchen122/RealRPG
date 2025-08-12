@@ -4,7 +4,7 @@ import styles from "./quest.module.css";
 
 function ActiveQuests() {
   const { activeQuests } = useUser();
-  console.log(activeQuests);
+
   return (
     <div className={styles.questWindow}>
       {activeQuests.length === 0 ? (
@@ -12,12 +12,7 @@ function ActiveQuests() {
       ) : (
         <div className={styles.loadQuests}>
           {activeQuests.map((questUnit) => (
-            <ActiveQuestItem
-              key={questUnit.id}
-              id={questUnit.id}
-              param={questUnit.parameters}
-              template={questUnit.template}
-            />
+            <ActiveQuestItem key={questUnit.id} unit={questUnit} />
           ))}
         </div>
       )}

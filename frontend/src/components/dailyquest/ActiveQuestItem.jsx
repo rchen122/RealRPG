@@ -4,6 +4,8 @@ import axios from "axios";
 import { useUser } from "../../UserContext";
 
 function ActiveQuestItem(props) {
+  const questUnit = props.unit;
+  console.log(questUnit);
   const questName = props.template.quest_name;
   const [[key, value]] = Object.entries(props.param);
 

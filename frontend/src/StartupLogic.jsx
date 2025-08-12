@@ -1,31 +1,19 @@
 import { useEffect } from "react";
 import { useUser } from "./UserContext";
 import axios from "axios";
-
+import { checkUser, fetchUserData } from "./utils/Auth";
 function StartupLogic() {
-  const userId = 1;
+  // Next steps: Fetch user/session info, if not user = null and need login button instead of profile
   const { setUserData, setAvailableQuests, setActiveQuests } = useUser();
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const res = await axios.get(
-          `http://localhost:8000/userdata?userId=${userId}`
-        );
-        const templates = await axios.get(
-          `http://localhost:8000/get_templates?userId=1`
-        );
-        setUserData(res.data.userData[0]);
-        setActiveQuests(res.data.userQuests);
-        setAvailableQuests(templates.data);
-      } catch (err) {
-        console.error("Failed to fetch:", err);
-      }
-    };
 
-    fetchUserData();
+  useEffect(() => {
+    const res = checkUser();
+    if (res.success === true) {
+      const userId = res.data;
+      fetchUserData(userId, setUserData, setAvailableQuests, setActiveQuests);
+    }
   }, []);
-  // const { userData } = useUser();
-  // console.log(userData);
+
   return null;
 }
 
