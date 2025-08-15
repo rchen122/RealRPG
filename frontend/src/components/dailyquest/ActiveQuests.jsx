@@ -2,7 +2,7 @@ import ActiveQuestItem from "./ActiveQuestItem";
 import { useUser } from "../../UserContext";
 import styles from "./quest.module.css";
 
-function ActiveQuests() {
+function ActiveQuests({ editMode }) {
   const { activeQuests } = useUser();
 
   return (
@@ -12,7 +12,11 @@ function ActiveQuests() {
       ) : (
         <div className={styles.loadQuests}>
           {activeQuests.map((questUnit) => (
-            <ActiveQuestItem key={questUnit.id} unit={questUnit} />
+            <ActiveQuestItem
+              key={questUnit.id}
+              unit={questUnit}
+              editMode={editMode}
+            />
           ))}
         </div>
       )}

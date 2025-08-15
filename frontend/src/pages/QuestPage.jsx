@@ -5,23 +5,21 @@ import QuestItem from "../components/dailyquest/QuestItem";
 import styles from "../components/dailyquest/quest.module.css";
 
 function QuestPage() {
-  const { userData, availableQuests, activeQuests } = useUser();
-
-  const [showTemplate, setShowTemplate] = useState(false);
-
+  const [editMode, setEditMode] = useState(false);
+  const { availableQuests } = useUser();
   const handleClick = () => {
-    setShowTemplate((prev) => !prev);
+    setEditMode((prev) => !prev);
   };
 
   return (
     <div className={styles.questWindow}>
-      <ActiveQuests />
+      <ActiveQuests editMode={editMode} />
 
       <button className={styles.loadButton} onClick={handleClick}>
-        {showTemplate ? "Return" : "Edit Quests"}
+        {editMode ? "Return" : "Edit Quests"}
       </button>
 
-      {showTemplate && (
+      {editMode && (
         <div className={styles.loadQuests}>
           {availableQuests.map((template) => (
             <QuestItem

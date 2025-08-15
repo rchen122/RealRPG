@@ -11,7 +11,7 @@ function MainBody() {
 
   return (
     <div className={styles.mainBody}>
-      <ActiveQuests />
+      <ActiveQuests editMode={false} />
       <p>Future module functionality in progress...</p>
     </div>
   );
