@@ -1,11 +1,19 @@
 import styles from "./activeQuest.module.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-function ProgressBar({ current, max, units, updateProgress }) {
-  const percent = Math.min(Math.max(current / max, 0), 1) * 100;
+function ProgressBar({ current, max, units, updateProgress, mode }) {
+  //if its bool: percent is 0 or 100 based on if current = true or false
+
+  const [percent, setPercent] = useState(0);
   const [dropDown, setDropDown] = useState(false);
   const [inputValue, setInputValue] = useState("");
-
+  useEffect(() => {
+    if (mode === "value") {
+      setPercent(Math.min(Math.max(current / max, 0), 1) * 100);
+    } else {
+      setPercent(current === false ? 0 : 100);
+    }
+  }, [current, max, mode]);
   function toggleDropDown() {
     setDropDown(!dropDown);
     console.log(dropDown);
@@ -15,7 +23,11 @@ function ProgressBar({ current, max, units, updateProgress }) {
     setInputValue(val);
   }
   function submitChange(event) {
-    updateProgress(inputValue);
+    if (mode === "value") {
+      updateProgress(inputValue);
+    } else {
+      updateProgress(!current);
+    }
     event.preventDefault();
   }
   return (
@@ -23,20 +35,31 @@ function ProgressBar({ current, max, units, updateProgress }) {
       <div className={styles.barContainer}>
         <div onClick={toggleDropDown} className={styles.clickableArea}>
           <div className={styles.fill} style={{ width: `${percent}%` }} />
-          <div className={styles.text}>
-            {current} / {max} {units}
-          </div>
+          {mode === "value" ? (
+            <div className={styles.text}>
+              {current} / {max} {units}
+            </div>
+          ) : (
+            <div className={styles.text}>{max}</div>
+          )}
         </div>
       </div>
 
       {dropDown && (
         <div>
           <form className={styles.questForm}>
-            <input
-              placeholder="Input Value"
-              onChange={updateInput}
-              value={inputValue}
-            ></input>
+            {mode === "value" ? (
+              <input
+                placeholder="Input Value"
+                onChange={updateInput}
+                value={inputValue}
+              />
+            ) : (
+              <button onClick={submitChange}>
+                Mark as {current === false ? "Complete" : "Incomplete"}
+              </button>
+            )}
+
             <button onClick={submitChange}>Update</button>
           </form>
         </div>

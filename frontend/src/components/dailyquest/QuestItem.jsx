@@ -14,6 +14,7 @@ function QuestItem(props) {
   }
   const name = props.param.Name;
   const unit = props.param.Unit;
+  const datatype = props.param.Datatype; // BOOL OR INT LOGIC HERE
 
   const addQuest = async (event) => {
     event.preventDefault();
@@ -25,7 +26,7 @@ function QuestItem(props) {
       const userQuestData = {
         user_id: userData.id,
         template_id: questId,
-        parameter: { [unit]: param },
+        parameter: { [unit]: param, Datatype: datatype },
         mode: "add",
       };
       const res = await axios.post(

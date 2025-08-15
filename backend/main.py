@@ -47,7 +47,7 @@ def check_logs(user_id: int):
         active_quests = text("""
             SELECT 
                 uq.id AS user_id,
-                uq.parameter,
+                uq.parameters,
                 qt.id AS template_id
             FROM user_quest uq
             JOIN quest_template qt ON uq.template_id = qt.id
@@ -62,15 +62,15 @@ def check_logs(user_id: int):
         for quest in results:
             print(quest)
             template_id = quest["template_id"]
-            unit = list(quest["parameter"].keys())[0]
+            unit = list(quest["parameters"].keys())[0]
             sql = text("""
-                INSERT INTO user_quest_log (user_id, template_id, date, completed, progress_data)
+                INSERT INTO user_quest_log (user_id, template_id, quest_date, completed, progress_data)
                 SELECT :user_id, :template_id, :current_date, false, :progress_data
                 WHERE NOT EXISTS (
                     SELECT 1 FROM user_quest_log
                     WHERE user_id = :user_id
                     AND template_id = :template_id
-                    AND date::date = :current_date
+                    AND quest_date::date = :current_date
                 )
             """)
             progress_data_json = {unit: 0}

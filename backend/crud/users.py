@@ -5,7 +5,6 @@ import datetime
 import json
 
 def get_userdata(SessionLocal, userId: int = Query(...)):
-
     with SessionLocal() as session:
         user_stmt = text("SELECT id, email, username, full_name, streak FROM users WHERE id = :userId")
         user_result = session.execute(user_stmt, {"userId": userId})
@@ -14,7 +13,7 @@ def get_userdata(SessionLocal, userId: int = Query(...)):
         join_stmt = text("""
             SELECT 
                 uq.id AS uq_id,
-                uq.parameter,
+                uq.parameters,
                 qt.id AS qt_id,
                 qt.quest_name,
                 qt.description,
@@ -33,7 +32,7 @@ def get_userdata(SessionLocal, userId: int = Query(...)):
                 FROM user_quest_log
                 WHERE user_id = :userId
                   AND template_id = :template_id
-                  AND date::date = :today
+                  AND quest_date::date = :today
             """)
             progress_result = session.execute(progress_stmt, {
                 "userId": userId,
@@ -43,7 +42,7 @@ def get_userdata(SessionLocal, userId: int = Query(...)):
             progress_data = progress_result.progress_data if progress_result else {}
             user_quests.append({
                 "id": row.uq_id,
-                "parameters": row.parameter,
+                "parameters": row.parameters,
                 "template": {
                     "id": row.qt_id,
                     "quest_name": row.quest_name,
@@ -73,7 +72,7 @@ def get_templates(SessionLocal, userId: int = Query(...)):
 def update_user(SessionLocal, userInfo):
     with SessionLocal() as session:
         if userInfo.mode == "add":
-            userQuest_stmt = text("INSERT INTO user_quest (user_id, template_id, parameter) VALUES (:user_id, :template_id, :parameter)")
+            userQuest_stmt = text("INSERT INTO user_quest (user_id, template_id, parameters) VALUES (:user_id, :template_id, :parameter)")
             session.execute(userQuest_stmt, {"user_id": userInfo.user_id, "template_id": userInfo.template_id, 
                                                     "parameter": json.dumps(userInfo.parameter)})
             session.commit()

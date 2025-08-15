@@ -20,7 +20,6 @@ CREATE TABLE user_quest (
     id SERIAL PRIMARY KEY,
     user_id INT REFERENCES users(id) ON DELETE CASCADE,
     template_id INT REFERENCES quest_template(id) ON DELETE CASCADE,
-    active BOOLEAN NOT NULL,
     parameters JSONB NOT NULL
 ); -- QUESTS LINKED TO EACH USER
 
@@ -36,8 +35,7 @@ CREATE TABLE user_quest_log (
 
 
 
-INSERT INTO users (email, username, hashed_password, full_name)
-VALUES ('raymondchen1221@gmail.com', 'rchen122', 'password1234', 'Raymond Chen');
+
 
 -- Parameter Schema should be in format: Name, Unit, Datatype
 -- For example, Duration, Minutes, int
@@ -46,34 +44,34 @@ VALUES
 -- 1. Read a Book
 ('Read a Book', 
  'This quest is for building a daily reading habit by committing to a target duration.', 
- '{"Name": "Duration", "Unit": "minutes", "Datatype": "int"}'::jsonb),
+ '{"Name": "Duration", "Unit": "minutes", "Datatype": "value"}'::jsonb),
 
 -- 2. Journal Daily
 ('Journal Daily', 
  'This quest encourages daily journaling to promote reflection and mindfulness.', 
- '{"Name": "Number", "Unit": "words", "Datatype": "int"}'::jsonb),
+ '{"Name": "Number", "Unit": "words", "Datatype": "value"}'::jsonb),
 
 
 
 -- 4. Hydration
 ('Hydration', 
  'Drink a target amount of water daily to maintain proper hydration.', 
- '{"Name": "Amount", "Unit": "mL", "Datatype": "int"}'::jsonb),
+ '{"Name": "Amount", "Unit": "mL", "Datatype": "value"}'::jsonb),
 
 -- 5. Stretching
 ('Stretching', 
  'Stretch for a set duration daily to improve flexibility and reduce tension.', 
- '{"Name": "Duration", "Unit": "minutes", "Datatype": "int"}'::jsonb),
+ '{"Name": "Duration", "Unit": "minutes", "Datatype": "value"}'::jsonb),
 
 -- 6. Sleep Duration
 ('Sleep Duration', 
  'Track your sleep and aim to get a minimum number of hours each night.', 
- '{"Name": "Duration", "Unit": "hours", "Datatype": "float"}'::jsonb),
+ '{"Name": "Duration", "Unit": "hours", "Datatype": "value"}'::jsonb),
 
 -- 7. Wake up time
 ('Wake Up', 'Track wake up time', 
-'{"Name": "Time", "Unit": "HH:MM", "Datatype": "datetime"}'::jsonb), -- VERIFY
+'{"Name": "Time", "Unit": "HH:MM", "Datatype": "bool"}'::jsonb), -- VERIFY
 
 -- 8. Cardio
 ('Cardio', 'Track cardio mileage for the day', 
-'{"Name": "Amount", "Unit": "miles", "Datatype": "float"}'::jsonb);
+'{"Name": "Amount", "Unit": "miles", "Datatype": "value"}'::jsonb);

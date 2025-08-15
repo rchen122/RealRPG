@@ -7,15 +7,18 @@ import { fetchUserData } from "../../utils/Auth";
 function ActiveQuestItem(props) {
   const questUnit = props.unit;
   const editMode = props.editMode;
-
-  const questName = questUnit.template.quest_name;
-  const [[key, value]] = Object.entries(questUnit.parameters);
   const { userData, setUserData, setAvailableQuests, setActiveQuests } =
     useUser();
+
+  const questName = questUnit.template.quest_name;
+  const [[unit, param], [dtype, mode]] = Object.entries(questUnit.parameters);
+
   const [[progressUnit, progressValue]] = Object.entries(
     questUnit.progress_data
   );
-  const completed = progressValue >= value ? true : false;
+
+  const completed =
+    mode === "value" ? (progressValue >= param ? true : false) : progressValue;
 
   const removeQuest = async () => {
     try {
@@ -45,7 +48,7 @@ function ActiveQuestItem(props) {
       const queryData = {
         user_id: userData.id,
         template_id: questUnit.template.id,
-        parameter: { [key]: new_value },
+        parameter: { [unit]: new_value, [dtype]: mode },
         mode: "update",
       };
       const res = await axios.post(
@@ -75,9 +78,10 @@ function ActiveQuestItem(props) {
       <div>
         <ProgressBar
           current={currProgress}
-          max={value}
-          units={key}
+          max={param}
+          units={unit}
           updateProgress={updateProgress}
+          mode={mode}
         />
       </div>
       {editMode && <button onClick={removeQuest}>Remove</button>}
