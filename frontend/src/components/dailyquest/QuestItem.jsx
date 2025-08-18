@@ -27,7 +27,6 @@ function QuestItem(props) {
         user_id: userData.id,
         template_id: questId,
         parameter: { [unit]: param, Datatype: datatype },
-        mode: "add",
       };
       const res = await axios.post(
         "http://localhost:8000/updateUserQuest",

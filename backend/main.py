@@ -36,7 +36,7 @@ def get_me(request: Request):
 def login(response: Response, username: str, password: str):
     return auth.login(SessionLocal, sessions, response, username, password)
 
-@app.get("/signup")
+@app.post("/signup")
 def signup(response: Response, username: str, password: str):
     return auth.signup(SessionLocal, sessions, response, username, password)
 
@@ -101,8 +101,16 @@ class UserQuest(BaseModel):
     user_id: int
     template_id: int
     parameter: dict
-    mode: str
+    # mode: str
+
+@app.put("/updateUserQuest")
+def update_user(userInfo: UserQuest):
+    return users.update_user_quest(SessionLocal, userInfo)
 
 @app.post("/updateUserQuest")
-def update_user(userInfo: UserQuest):
-    return users.update_user(SessionLocal, userInfo)
+def add_user_quest(userInfo: UserQuest):
+    return users.add_user_quest(SessionLocal, userInfo)
+
+@app.delete("/updateUserQuest")
+def delete_user_quest(userInfo: UserQuest):
+    return users.delete_user_quest(SessionLocal, userInfo)

@@ -26,12 +26,10 @@ function ActiveQuestItem(props) {
         user_id: userData.id,
         template_id: questUnit.template.id,
         parameter: {},
-        mode: "delete",
       };
-      const res = await axios.post(
-        "http://localhost:8000/updateUserQuest",
-        queryData
-      );
+      const res = await axios.delete("http://localhost:8000/updateUserQuest", {
+        data: queryData,
+      });
 
       fetchUserData(
         userData.id,
@@ -49,9 +47,8 @@ function ActiveQuestItem(props) {
         user_id: userData.id,
         template_id: questUnit.template.id,
         parameter: { [unit]: new_value, [dtype]: mode },
-        mode: "update",
       };
-      const res = await axios.post(
+      const res = await axios.put(
         "http://localhost:8000/updateUserQuest",
         queryData
       );

@@ -68,30 +68,34 @@ def get_templates(SessionLocal, userId: int = Query(...)):
         return data
     
 
-
-def update_user(SessionLocal, userInfo):
+def add_user_quest(SessionLocal, userInfo):
     with SessionLocal() as session:
-        if userInfo.mode == "add":
-            userQuest_stmt = text("INSERT INTO user_quest (user_id, template_id, parameters) VALUES (:user_id, :template_id, :parameter)")
-            session.execute(userQuest_stmt, {"user_id": userInfo.user_id, "template_id": userInfo.template_id, 
-                                                    "parameter": json.dumps(userInfo.parameter)})
-            session.commit()
-        elif userInfo.mode == "update":
-            userQuest_stmt = text("""
-                UPDATE user_quest_log
-                SET progress_data = :progress_data
-                WHERE user_id = :user_id
-                AND template_id = :template_id
-            """)
+        userQuest_stmt = text("INSERT INTO user_quest (user_id, template_id, parameters) VALUES (:user_id, :template_id, :parameter)")
+        session.execute(userQuest_stmt, {"user_id": userInfo.user_id, "template_id": userInfo.template_id, 
+                                                "parameter": json.dumps(userInfo.parameter)})
+        session.commit()
+    return {"message": "reached", "data": ""}
 
-            session.execute(userQuest_stmt, {
-                "progress_data": json.dumps(userInfo.parameter),
-                "user_id": userInfo.user_id,
-                "template_id": userInfo.template_id
-            })  
-            session.commit()
-        elif userInfo.mode == "delete":
-            userQuest_stmt = text("DELETE FROM user_quest WHERE template_id = :template_id AND user_id = :user_id")
-            session.execute(userQuest_stmt, {"template_id": userInfo.template_id, "user_id": userInfo.user_id})
-            session.commit()
+def delete_user_quest(SessionLocal, userInfo):
+    with SessionLocal() as session:
+        userQuest_stmt = text("DELETE FROM user_quest WHERE template_id = :template_id AND user_id = :user_id")
+        session.execute(userQuest_stmt, {"template_id": userInfo.template_id, "user_id": userInfo.user_id})
+        session.commit()
+    return {"message": "reached", "data": ""}
+
+def update_user_quest(SessionLocal, userInfo):
+    with SessionLocal() as session:
+        userQuest_stmt = text("""
+            UPDATE user_quest_log
+            SET progress_data = :progress_data
+            WHERE user_id = :user_id
+            AND template_id = :template_id
+        """)
+
+        session.execute(userQuest_stmt, {
+            "progress_data": json.dumps(userInfo.parameter),
+            "user_id": userInfo.user_id,
+            "template_id": userInfo.template_id
+        })  
+        session.commit()
     return {"message": "reached", "data": ""}
